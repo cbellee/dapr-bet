@@ -1,0 +1,20 @@
+[
+    {
+        "email": "them@home.net",
+        "firstname": "sue",
+        "lastname": "james",
+        "balance": 350
+    },
+    {
+        "email": "you@home.net",
+        "firstname": "john",
+        "lastname": "smith",
+        "balance": 450
+    },
+    {
+        "email": "me@home.net",
+        "firstname": "kevin",
+        "lastname": "sanderson",
+        "balance": 230.5
+    }
+]

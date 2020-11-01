@@ -1,0 +1,33 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledJob
+metadata:
+  name: rabbitmq-consumer
+  namespace: default
+spec:
+  jobTargetRef:
+    template:
+      spec:
+        containers:
+        - name: rabbitmq-client
+          image: tsuyoshiushio/rabbitmq-client:dev3
+          imagePullPolicy: Always
+          command: ["receive",  "amqp://user:PASSWORD@rabbitmq.default.svc.cluster.local:5672", "job"]
+          envFrom:
+            - secretRef:
+                name: rabbitmq-consumer
+        restartPolicy: Never
+    backoffLimit: 4  
+  pollingInterval: 10             
+  maxReplicaCount: 30             
+  successfulJobsHistoryLimit: 3   
+  failedJobsHistoryLimit: 2       
+  scalingStrategy:
+    strategy: "custom"                        
+    customScalingQueueLengthDeduction: 1      
+    customScalingRunningJobPercentage: "0.5"  
+  triggers:
+  - type: rabbitmq
+    metadata:
+      queueName: hello
+      host: RabbitMqHost
+      queueLength  : '5'

@@ -1,0 +1,16 @@
+apiVersion: "aadpodidentity.k8s.io/v1"
+kind: AzureIdentity
+metadata:
+  name: dapr-bet-cluster-mid
+spec:
+  type: 0
+  resourceID: /subscriptions/b2375b5f-8dab-4436-b87c-32bc7fdce5d0/resourcegroups/MC_dapr-bet_dapr-bet-cluster_australiaeast/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dapr-bet-cluster-agentpool
+  clientID: c8467be6-4b68-4ccd-8a08-74382c0d2019
+---
+apiVersion: "aadpodidentity.k8s.io/v1"
+kind: AzureIdentityBinding
+metadata:
+  name: dapr-bet-cluster-agentpool-identity-binding
+spec:
+  azureIdentity: dapr-bet-cluster-mid
+  selector: dapr-bet-cluster-mid
