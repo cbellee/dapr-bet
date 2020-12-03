@@ -95,7 +95,7 @@ $key = (Get-AzServiceBusKey -ResourceGroupName $ResourceGroup -Namespace $ns -Na
 $token = New-AzServiceBusSasToken -Namespace $ns -Policy $PolicyName -Key $key
 $i = 0
 
-1..10 | ForEach-Object {
+1..100 | ForEach-Object {
 	foreach ($race in $races) {
 		Write-Host "sending message [$i]..." -ForegroundColor Yellow			
 		Send-AzServiceBusMessage -ResourceGroupName $ResourceGroup `

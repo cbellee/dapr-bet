@@ -20,7 +20,7 @@ spec:
     deploymentName: results
   pollingInterval: 5 # seconds
   minReplicaCount: 1
-  maxReplicaCount: 10
+  maxReplicaCount: 20
   triggers:
   - type: azure-servicebus
     metadata:

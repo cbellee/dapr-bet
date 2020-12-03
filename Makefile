@@ -9,13 +9,8 @@ BETS_SERVICE_PORT := 8004
 PUNTERS_SERVICE_PORT := 8002
 RACES_SERVICE_PORT := 8005
 
-#### reference existing shell env vars #####
-# ${cosmosDbConnectionString}
-# ${cosmosDbMasterKey}
-# ${aiInstrumentationKey}
-# ${aiApiKey}
-# ${acrAdminPassword}
-# ${sbConnectionString}
+#### export shell env vars #####
+source ./.env
 
 build_results:
 	docker build -t ${ACR_URI}/results:${TAG} --build-arg SERVICE_NAME="results" --build-arg SERVICE_PORT=${RESULTS_SERVICE_PORT} --build-arg BUILD_INFO=${BUILD_INFO} --build-arg VERSION=${VERSION} -f Dockerfile .
@@ -55,20 +50,40 @@ push_races:
 push: push_results push_bets push_punters push_races
 
 deploy_results:
-	kubectl delete deploy results
-	kubectl apply -f ./manifests/app_results.yml
+	@if [ -z $(kubectl get deployment results) = *"Error from server (NotFound)"* ]; then\
+		kubectl apply -f ./manifests/app_results.yml;\
+	fi
+	@if [ -z $(kubectl get deployment results) != *"Error from server (NotFound)"* ]; then\
+		kubectl delete deploy results;\
+		kubectl apply -f ./manifests/app_results.yml;\
+	fi
 
 deploy_bets:
-	kubectl delete deploy bets
-	kubectl apply -f ./manifests/app_bets.yml
+		@if [ -z $(kubectl get deployment bets) = *"Error from server (NotFound)"* ]; then\
+		kubectl apply -f ./manifests/app_bets.yml;\
+	fi
+	@if [ -z $(kubectl get deployment bets) != *"Error from server (NotFound)"* ]; then\
+		kubectl delete deploy bets;\
+		kubectl apply -f ./manifests/app_bets.yml;\
+	fi
 
 deploy_punters:
-	kubectl delete deploy punters
-	kubectl apply -f ./manifests/app_punters.yml
+	@if [ -z $(kubectl get deployment punters) = *"Error from server (NotFound)"* ]; then\
+		kubectl apply -f ./manifests/app_punters.yml;\
+	fi
+	@if [ -z $(kubectl get deployment punters) != *"Error from server (NotFound)"* ]; then\
+		kubectl delete deploy punters;\
+		kubectl apply -f ./manifests/app_punters.yml;\
+	fi
 
 deploy_races:
-	kubectl delete deploy races
-	kubectl apply -f ./manifests/app_races.yml
+	@if [ -z $(kubectl get deployment races) = *"Error from server (NotFound)"* ]; then\
+		kubectl apply -f ./manifests/app_races.yml;\
+	fi
+	@if [ -z $(kubectl get deployment races) != *"Error from server (NotFound)"* ]; then\
+		kubectl delete deploy races;\
+		kubectl apply -f ./manifests/app_races.yml;\
+	fi
 
 deploy: deploy_results deploy_bets deploy_punters deploy_races
 

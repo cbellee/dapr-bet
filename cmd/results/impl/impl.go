@@ -174,7 +174,7 @@ func (s *ResultsService) ResultsTopicHandler(ctx context.Context, e *common.Topi
 	logger.Printf("event - Topic: '%s', RaceID: '%d', RaceName: '%s', TrackName: '%s', Time: '%s'", e.Topic, result.RaceID, result.RaceName, result.TrackName, result.Time)
 
 	for _, r := range result.Runners {
-		err := s.ProcessResult(r.HorseID, result.RaceID)
+		err := s.ProcessResult(r.HorseID, result.RaceID, 2)
 		if err != nil {
 			log.Fatalf(err.Error())
 		}
@@ -184,9 +184,17 @@ func (s *ResultsService) ResultsTopicHandler(ctx context.Context, e *common.Topi
 }
 
 // ProcessResult processes a race result
-func (s *ResultsService) ProcessResult(horseID int, raceID int) error {
+func (s *ResultsService) ProcessResult(horseID int, raceID int, sleepIntervalInSeconds int) error {
 	defer helper.TimeTrack(time.Now(), "processResult()")
 	ctx := context.Background()
+
+	// sleep for 1 second
+	if sleepIntervalInSeconds > 0 && sleepIntervalInSeconds < 60 {
+		interval := time.Duration(sleepIntervalInSeconds)
+		time.Sleep(interval * time.Second)
+	} else {
+		fmt.Printf("Invalid sleep interval '%d'. Interval must be greater than 0 and less then 60 seconds", sleepIntervalInSeconds)
+	}
 
 	betData := spec.BetData{
 		RaceID:  raceID,

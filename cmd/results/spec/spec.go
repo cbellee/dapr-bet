@@ -80,6 +80,6 @@ type ResultsService interface {
 	AddTopicHandler(sub *common.Subscription, fn func(context.Context, *common.TopicEvent) error) error
 	AddServiceHandler(name string, fn func(ctx context.Context, in *common.InvocationEvent) (out *common.Content, err error)) error
 	ResultsTopicHandler(ctx context.Context, e *common.TopicEvent) error
-	ProcessResult(horseID int, RaceID int) error
+	ProcessResult(HorseID int, RaceID int, SleepIntervalInSeconds int) error
 	StartService() error
 }
