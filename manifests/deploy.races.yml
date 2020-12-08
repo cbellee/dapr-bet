@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: races-service
+  labels:
+    app: races-service
+spec:
+  type: NodePort
+  ports:
+    - port: 3001
+      targetPort: 8005
+      protocol: TCP
+      name: http
+  selector:
+    app: races
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: races
+  labels:
+    app: races
+    aadpodidbinding: dapr-bet-cluster-mid
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: races
+  template:
+    metadata:
+      labels:
+        app: races
+        aadpodidbinding: dapr-bet-cluster-mid
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "races"
+        dapr.io/port: "8005"
+        dapr.io/log-level: "debug"
+        dapr.io/config: "tracing"
+        dapr.io/profiling: "true"
+    spec:
+      containers:
+        - name: races
+          image: daprbet891237.azurecr.io/races:dev-0.1.0
+          ports:
+            - containerPort: 8005
+          imagePullPolicy: Always
+          env:
+            - name: COSMOS_DB_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: cosmos-db-secret
+                  key: cosmosDbMasterKey
+            - name: COSMOS_DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: cosmos-db-secret
+                  key: cosmosDbUrl
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi

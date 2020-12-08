@@ -17,9 +17,9 @@ COPY cmd/ ./cmd/
 COPY pkg/ ./pkg/
 
 RUN GO111MODULE=on GOOS=linux CGO_ENABLED=0 \
-go build \
--ldflags "-X main.version=${VERSION} -X 'main.buildInfo=${BUILD_INFO}'" \
--o server ./cmd/${SERVICE_NAME}
+	go build \
+	-ldflags "-X main.version=${VERSION} -X 'main.buildInfo=${BUILD_INFO}'" \
+	-o server ./cmd/${SERVICE_NAME}
 
 # release container image
 FROM alpine:latest 

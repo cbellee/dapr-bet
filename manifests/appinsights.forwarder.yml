@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dapr-monitoring
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: dapr-localforwarder
+  namespace: dapr-monitoring
+  labels:
+    app: dapr-localforwarder
+spec:
+  selector:
+    app: dapr-localforwarder
+  ports:
+    - protocol: TCP
+      port: 55678
+      targetPort: 55678
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dapr-localforwarder
+  namespace: dapr-monitoring
+  labels:
+    app: dapr-localforwarder
+spec:
+  replicas: 3 # Adjust replica # based on your telemetry volume
+  selector:
+    matchLabels:
+      app: dapr-localforwarder
+  template:
+    metadata:
+      labels:
+        app: dapr-localforwarder
+        aadpodidbinding: dapr-bet-cluster-mid
+    spec:
+      containers:
+        - name: dapr-localforwarder
+          image: docker.io/daprio/dapr-localforwarder:0.1-beta1
+          ports:
+            - containerPort: 55678
+          imagePullPolicy: Always
+          env:
+            - name: APPINSIGHTS_INSTRUMENTATIONKEY
+              valueFrom:
+                secretKeyRef:
+                  name: cosmos-db-secret
+                  key: aiInstrumentationKey
+            - name: APPINSIGHTS_LIVEMETRICSSTREAMAUTHENTICATIONAPIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: cosmos-db-secret
+                  key: aiApiKey

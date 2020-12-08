@@ -1,12 +1,12 @@
-VERSION := 0.1.0
 ENVIRONMENT := dev
+VERSION := 0.1.0
 TAG := ${ENVIRONMENT}-${VERSION}
 BUILD_INFO := "dapr bet demo"
 ACR_LOGIN_NAME := daprbet891237
 ACR_URI := daprbet891237.azurecr.io
+PUNTERS_SERVICE_PORT := 8002
 RESULTS_SERVICE_PORT := 8003
 BETS_SERVICE_PORT := 8004
-PUNTERS_SERVICE_PORT := 8002
 RACES_SERVICE_PORT := 8005
 
 #### export shell env vars #####
@@ -51,38 +51,38 @@ push: push_results push_bets push_punters push_races
 
 deploy_results:
 	@if [ -z $(kubectl get deployment results) = *"Error from server (NotFound)"* ]; then\
-		kubectl apply -f ./manifests/app_results.yml;\
+		kubectl apply -f ./manifests/deploy.results.yml;\
 	fi
 	@if [ -z $(kubectl get deployment results) != *"Error from server (NotFound)"* ]; then\
 		kubectl delete deploy results;\
-		kubectl apply -f ./manifests/app_results.yml;\
+		kubectl apply -f ./manifests/deploy.results.yml;\
 	fi
 
 deploy_bets:
 		@if [ -z $(kubectl get deployment bets) = *"Error from server (NotFound)"* ]; then\
-		kubectl apply -f ./manifests/app_bets.yml;\
+		kubectl apply -f ./manifests/deploy.bets.yml;\
 	fi
 	@if [ -z $(kubectl get deployment bets) != *"Error from server (NotFound)"* ]; then\
 		kubectl delete deploy bets;\
-		kubectl apply -f ./manifests/app_bets.yml;\
+		kubectl apply -f ./manifests/deploy.bets.yml;\
 	fi
 
 deploy_punters:
 	@if [ -z $(kubectl get deployment punters) = *"Error from server (NotFound)"* ]; then\
-		kubectl apply -f ./manifests/app_punters.yml;\
+		kubectl apply -f ./manifests/deploy.punters.yml;\
 	fi
 	@if [ -z $(kubectl get deployment punters) != *"Error from server (NotFound)"* ]; then\
 		kubectl delete deploy punters;\
-		kubectl apply -f ./manifests/app_punters.yml;\
+		kubectl apply -f ./manifests/deploy.punters.yml;\
 	fi
 
 deploy_races:
 	@if [ -z $(kubectl get deployment races) = *"Error from server (NotFound)"* ]; then\
-		kubectl apply -f ./manifests/app_races.yml;\
+		kubectl apply -f ./manifests/deploy.races.yml;\
 	fi
 	@if [ -z $(kubectl get deployment races) != *"Error from server (NotFound)"* ]; then\
 		kubectl delete deploy races;\
-		kubectl apply -f ./manifests/app_races.yml;\
+		kubectl apply -f ./manifests/deploy.races.yml;\
 	fi
 
 deploy: deploy_results deploy_bets deploy_punters deploy_races
@@ -113,28 +113,28 @@ logs_races_dapr:
 
 deploy_dapr_components:
 	# deploy AAD pod identity 
-	kubectl apply -f ./manifests/azure_identity_config.yml
-	kubectl apply -f ./manifests/dapr_azure_keyvault.yml
+	kubectl apply -f ./manifests/azure.pod.identity.yml
+	kubectl apply -f ./components/dapr-bet.secretstore.yml
 	
 	# add secrets to key vault
-	#az keyvault secret set --name cosmosDbConnectionString --vault-name dapr-bet-kv --value ${cosmosDbConnectionString}
-	#az keyvault secret set --name cosmosDbMasterKey --vault-name dapr-bet-kv --value ${cosmosDbMasterKey}
-	#az keyvault secret set --name cosmosDbUrl --vault-name dapr-bet-kv --value ${cosmosDbUrl}
-	#az keyvault secret set --name aiInstrumentationKey --vault-name dapr-bet-kv --value ${aiInstrumentationKey}
-	#az keyvault secret set --name aiApiKey --vault-name dapr-bet-kv --value ${aiApiKey}
-	#az keyvault secret set --name signalrConnectionString --vault-name dapr-bet-kv --value ${signalrConnectionString}
-	#az keyvault secret set --name sbConnectionString --vault-name dapr-bet-kv --value ${sbConnectionString}
+	az keyvault secret set --name cosmosDbConnectionString --vault-name dapr-bet-kv --value ${cosmosDbConnectionString}
+	az keyvault secret set --name cosmosDbMasterKey --vault-name dapr-bet-kv --value ${cosmosDbMasterKey}
+	az keyvault secret set --name cosmosDbUrl --vault-name dapr-bet-kv --value ${cosmosDbUrl}
+	az keyvault secret set --name aiInstrumentationKey --vault-name dapr-bet-kv --value ${aiInstrumentationKey}
+	az keyvault secret set --name aiApiKey --vault-name dapr-bet-kv --value ${aiApiKey}
+	az keyvault secret set --name signalrConnectionString --vault-name dapr-bet-kv --value ${signalrConnectionString}
+	az keyvault secret set --name sbConnectionString --vault-name dapr-bet-kv --value ${sbConnectionString}
 
 	# apply ai forwarder manifests
-	kubectl apply -f ./manifests/dapr_ai_forwarder.yml
-	kubectl apply -f ./manifests/dapr_ai_native_exporter.yml
-	kubectl apply -f ./manifests/tracing.yml
+	kubectl apply -f ./manifests/appinsights.forwarder.yml
+	kubectl apply -f ./manifests/dapr-bet.exporter.appinsights.yml
+	kubectl apply -f ./components/dapr-bet.tracing.yml
 
 	# apply dapr components
-	kubectl apply -f ./manifests/dapr_cosmosdb_binding_bets.yml
-	kubectl apply -f ./manifests/dapr_cosmosdb_binding_punters.yml
-	kubectl apply -f ./manifests/dapr_cosmosdb_binding_results.yml
-	kubectl apply -f ./manifests/dapr_cosmosdb_statestore_bets.yml
-	kubectl apply -f ./manifests/dapr_cosmosdb_statestore_punters.yml
-	kubectl apply -f ./manifests/dapr_servicebus_pubsub.yml
-	kubectl apply -f ./manifests/dapr_signalr_binding.yml
+	kubectl apply -f ./components/dapr-bet.cosmosdb.binding.bets.yml
+	kubectl apply -f ./components/dapr-bet.cosmosdb.binding.punters.yml
+	kubectl apply -f ./components/dapr-bet.cosmosdb.binding.results.yml
+	kubectl apply -f ./components/dapr-bet.cosmosdb.statestore.bets.yml
+	kubectl apply -f ./componentss/dapr-bet.cosmosdb.statestore.punters.yml
+	kubectl apply -f ./components/dapr-bet.pubsub.servicebus.yml
+	kubectl apply -f ./components/dapr-bet.binding.signalr.yml

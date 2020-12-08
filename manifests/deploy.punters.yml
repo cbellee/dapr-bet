@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: punters
+  labels:
+    app: punters
+    aadpodidbinding: dapr-bet-cluster-mid
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: punters
+  template:
+    metadata:
+      labels:
+        app: punters
+        aadpodidbinding: dapr-bet-cluster-mid
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "punters"
+        dapr.io/port: "8002"
+        dapr.io/log-level: "debug"
+        dapr.io/config: "tracing"
+        dapr.io/profiling: "true"
+    spec:
+      containers:
+        - name: punters
+          image: daprbet891237.azurecr.io/punters:dev-0.1.0
+          ports:
+            - containerPort: 8002
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
