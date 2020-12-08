@@ -17,3 +17,5 @@
 
 # ignore .pptx files
 *.pptx
+
+scripts/4_create_secrets.sh
