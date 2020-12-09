@@ -18,4 +18,4 @@
 # ignore .pptx files
 *.pptx
 
-*.[4_create_secrets.sh]
+*[4_create_secrets.sh]
