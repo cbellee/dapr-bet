@@ -78,8 +78,8 @@ function Send-AzServiceBusMessage {
 }
 
 
-$ResourceGroup = 'dapr-bet'
-$NameSpace = "dapr-bet-sbus"
+$ResourceGroup = 'aks-dapr-bet-rg'
+$Namespace = "dev-sbus-osbskvybxzzaq"
 $TopicName = "results"
 $PolicyName = "RootManageSharedAccessKey"
 

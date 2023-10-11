@@ -4,13 +4,16 @@ metadata:
   name: bets-binding
 spec:
   type: bindings.azure.cosmosdb
+  version: v1
   metadata:
     - name: url
       secretKeyRef:
         name: cosmosDbUrl
+        key: cosmosDbUrl
     - name: masterKey
       secretKeyRef:
         name: cosmosDbMasterKey
+        key: cosmosDbMasterKey
     - name: database
       value: bets
     - name: collection

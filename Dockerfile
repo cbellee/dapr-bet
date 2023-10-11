@@ -22,7 +22,7 @@ RUN GO111MODULE=on GOOS=linux CGO_ENABLED=0 \
 	-o server ./cmd/${SERVICE_NAME}
 
 # release container image
-FROM alpine:latest 
+FROM alpine:latest as release
 
 ARG SERVICE_NAME="from_cmdline"
 ARG SERVICE_PORT=8000

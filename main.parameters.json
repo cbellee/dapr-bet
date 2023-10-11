@@ -1,0 +1,41 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "australiaeast"
+        },
+        "tags": {
+            "value": {
+                "costcentre": "123456789"
+            }
+        },
+        "adminGroupObjectID": {
+            "value": ""
+        },
+        "aksVersion": {
+            "value": "1.27.3"
+        },
+        "vmSku": {
+            "value": "Standard_F8s_v2"
+        },
+        "sshPublicKey": {
+            "value": ""
+        },
+        "addressPrefix": {
+            "value": "10.0.0.0/16"
+        },
+        "subnets": {
+            "value": [
+                {
+                    "name": "aks-system-subnet",
+                    "addressPrefix": "10.0.0.0/21"
+                },
+                {
+                    "name": "aks-user-subnet",
+                    "addressPrefix": "10.0.8.0/21"
+                }
+            ]
+        }
+    }
+}

@@ -1,4 +1,4 @@
-apiVersion: keda.k8s.io/v1alpha1
+apiVersion: keda.sh/v1alpha1
 kind: TriggerAuthentication
 metadata:
   name: trigger-auth-service-bus-results
@@ -8,16 +8,16 @@ spec:
       name: cosmos-db-secret
       key: sbConnectionString
 ---
-apiVersion: keda.k8s.io/v1alpha1
+apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
   name: results-scaler
   labels:
     app: results
-    deploymentName: results
+    name: results
 spec:
   scaleTargetRef:
-    deploymentName: results
+    name: results
   pollingInterval: 5 # seconds
   minReplicaCount: 1
   maxReplicaCount: 20

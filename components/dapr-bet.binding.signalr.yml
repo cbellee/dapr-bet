@@ -4,6 +4,7 @@ metadata:
   name: signalr-output-binding
 spec:
   type: bindings.azure.signalr
+  version: v1
   metadata:
     - name: connectionString
       secretKeyRef:

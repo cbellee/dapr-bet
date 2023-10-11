@@ -4,7 +4,6 @@ metadata:
   name: results
   labels:
     app: results
-    aadpodidbinding: dapr-bet-cluster-mid
 spec:
   replicas: 1
   selector:
@@ -14,19 +13,18 @@ spec:
     metadata:
       labels:
         app: results
-        aadpodidbinding: dapr-bet-cluster-mid
       annotations:
         dapr.io/enabled: "true"
         dapr.io/app-id: "results"
-        dapr.io/port: "8003"
+        dapr.io/app-port: "8003"
         dapr.io/log-level: "debug"
-        dapr.io/config: "tracing"
         dapr.io/profiling: "true"
+        dapr.io/enable-api-logging: "true"
     spec:
       dnsPolicy: ClusterFirst
       containers:
         - name: results
-          image: daprbet891237.azurecr.io/results:dev-0.1.0
+          image: <IMAGE_NAME>
           ports:
             - containerPort: 8003
           imagePullPolicy: Always
@@ -34,13 +32,13 @@ spec:
             - name: COSMOS_DB_KEY
               valueFrom:
                 secretKeyRef:
-                  name: cosmos-db-secret
-                  key: cosmosDbMasterKey
+                  name: cosmos-secrets
+                  key: cosmos-db-master-key
             - name: COSMOS_DB_URL
               valueFrom:
                 secretKeyRef:
-                  name: cosmos-db-secret
-                  key: cosmosDbUrl
+                  name: cosmos-secrets
+                  key: cosmos-db-url
           resources:
             requests:
               cpu: 100m
